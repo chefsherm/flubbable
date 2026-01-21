@@ -1,16 +1,27 @@
-# Feedback Board - Micro-SaaS
+# Feedback Board - AI-Powered Micro-SaaS
 
-A full-stack feedback board application where users can post feature requests, vote on ideas, and admins can manage submissions.
+A full-stack feedback board application where users can post feature requests, vote on ideas, and admins can manage submissions. **Now with AI-powered feature development!**
 
 ## Features
 
+### Core Features
 - 🔐 **Authentication** - Firebase Authentication (email/password)
 - 📝 **Feature Requests** - Users can create and view feature requests
 - ⬆️ **Voting System** - Upvote/downvote feature requests
 - 👑 **Admin Controls** - Admins can delete any post
-- 🎨 **Modern UI** - Built with Next.js and Tailwind CSS
+- 🎨 **Modern UI** - Built with Next.js, Tailwind CSS, and Mantine
 - 🚀 **Fast API** - Python FastAPI backend
 - 💾 **Cloud Database** - Google Cloud Firestore
+
+### 🤖 AI-Powered Development (NEW!)
+- **Natural Language to Blueprint** - Describe features in plain English, get technical blueprints
+- **Visual Architecture** - See component graphs, database changes, and risk assessments
+- **Human-in-the-Loop** - Review and approve AI-generated plans before implementation
+- **Real-time Build Monitoring** - Watch AI implement features with live terminal logs
+- **WebSocket Integration** - Real-time communication between frontend and AI agent
+- **LangGraph Agent** - Powered by Claude Sonnet 4 for intelligent code generation
+
+> Visit `/ai-agent` to interact with the AI development assistant!
 
 ## Tech Stack
 

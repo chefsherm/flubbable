@@ -1,8 +1,10 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, WebSocket
 from fastapi.middleware.cors import CORSMiddleware
 from .core.config import settings
 from .core.firebase import initialize_firebase
 from .api import users, feature_requests, votes
+from .services.agent_websocket import handle_websocket
+import uuid
 
 # Initialize Firebase on startup
 initialize_firebase()
@@ -40,3 +42,10 @@ async def root():
 @app.get("/health")
 async def health_check():
     return {"status": "healthy"}
+
+
+@app.websocket("/ws/agent")
+async def websocket_agent_endpoint(websocket: WebSocket):
+    """WebSocket endpoint for AI agent communication"""
+    client_id = str(uuid.uuid4())
+    await handle_websocket(websocket, client_id)
