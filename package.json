@@ -1,0 +1,27 @@
+{
+  "name": "flubbable",
+  "version": "1.0.0",
+  "description": "A lightweight, chainable validation library for catching flubs before they happen",
+  "main": "index.js",
+  "scripts": {
+    "test": "node examples/basic.js"
+  },
+  "keywords": [
+    "validation",
+    "validator",
+    "validate",
+    "schema",
+    "chainable",
+    "fluent",
+    "error-handling"
+  ],
+  "author": "",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "http://local_proxy@127.0.0.1:33502/git/chefsherm/flubbable"
+  },
+  "engines": {
+    "node": ">=10.0.0"
+  }
+}
