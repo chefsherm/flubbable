@@ -56,6 +56,7 @@ class AgentState(TypedDict):
     user_request: str
     tech_stack_context: str
     output_directory: str
+    use_e2b: bool  # Whether to use E2B for real testing
 
     # Agent outputs
     blueprint: Optional[Blueprint]
@@ -325,27 +326,51 @@ Implement the complete feature with all necessary files.
 
 
 def sandbox_node(state: AgentState) -> dict:
-    """Run tests in sandbox (simulated for now)"""
+    """Run tests in sandbox (E2B or simulated)"""
     console.print(Panel("🧪 SANDBOX: Running Tests", style="bold yellow"))
 
-    # TODO: Integrate with E2B or Docker to actually run tests
-    # For now, we'll simulate test results
+    # Check if E2B is enabled
+    use_e2b = state.get('use_e2b', False)
 
-    attempt = state['attempt_count']
+    if use_e2b:
+        # Use real E2B sandbox
+        try:
+            from e2b_sandbox import run_tests_in_e2b_sandbox
 
-    # Simulate: first attempt fails, second succeeds
-    if attempt == 1:
-        result = SandboxResult(
-            passed=False,
-            total_tests=3,
-            passed_tests=1,
-            failed_tests=2,
-            error_messages=[
-                "Test 'should submit feedback' failed: Expected button text 'Submit', found 'Send'",
-                "Test 'should validate required fields' failed: Form submitted without validation"
-            ],
-            execution_time_ms=1234.56,
-            logs="""
+            console.print("  🚀 Using E2B for real test execution", style="cyan")
+
+            result = run_tests_in_e2b_sandbox(
+                implementation=state['implementation'],
+                test_suite=state['test_suite']
+            )
+
+        except ImportError:
+            console.print("  ⚠️ E2B not installed, falling back to simulation", style="yellow")
+            use_e2b = False
+        except Exception as e:
+            console.print(f"  ❌ E2B error: {str(e)}", style="red")
+            console.print("  ⚠️ Falling back to simulation", style="yellow")
+            use_e2b = False
+
+    if not use_e2b:
+        # Simulate test results
+        console.print("  🎭 Using simulated test execution", style="cyan")
+
+        attempt = state['attempt_count']
+
+        # Simulate: first attempt fails, second succeeds
+        if attempt == 1:
+            result = SandboxResult(
+                passed=False,
+                total_tests=3,
+                passed_tests=1,
+                failed_tests=2,
+                error_messages=[
+                    "Test 'should submit feedback' failed: Expected button text 'Submit', found 'Send'",
+                    "Test 'should validate required fields' failed: Form submitted without validation"
+                ],
+                execution_time_ms=1234.56,
+                logs="""
 Running 3 tests...
 ✅ Test: should render feedback form
 ❌ Test: should submit feedback
@@ -353,18 +378,18 @@ Running 3 tests...
 ❌ Test: should validate required fields
    AssertionError: Form submitted without required fields
 """
-        )
-        console.print("  ❌ Tests FAILED", style="bold red")
+            )
+            console.print("  ❌ Tests FAILED", style="bold red")
 
-    else:
-        result = SandboxResult(
-            passed=True,
-            total_tests=3,
-            passed_tests=3,
-            failed_tests=0,
-            error_messages=[],
-            execution_time_ms=987.65,
-            logs="""
+        else:
+            result = SandboxResult(
+                passed=True,
+                total_tests=3,
+                passed_tests=3,
+                failed_tests=0,
+                error_messages=[],
+                execution_time_ms=987.65,
+                logs="""
 Running 3 tests...
 ✅ Test: should render feedback form
 ✅ Test: should submit feedback
@@ -372,8 +397,8 @@ Running 3 tests...
 
 All tests passed!
 """
-        )
-        console.print("  ✅ Tests PASSED", style="bold green")
+            )
+            console.print("  ✅ Tests PASSED", style="bold green")
 
     # Display results
     table = Table(title="Test Results")
@@ -443,20 +468,36 @@ def run_agent(
     user_request: str,
     output_dir: str = "./generated",
     max_attempts: int = 3,
-    tech_stack: str = "Next.js, FastAPI, Firestore"
+    tech_stack: str = "Next.js, FastAPI, Firestore",
+    use_e2b: bool = False
 ):
-    """Run the AI development agent"""
+    """
+    Run the AI development agent
+
+    Args:
+        user_request: Description of the feature to build
+        output_dir: Directory to save generated files
+        max_attempts: Maximum number of retry attempts
+        tech_stack: Technology stack description
+        use_e2b: Whether to use E2B for real test execution (requires E2B_API_KEY)
+    """
 
     console.print(Panel.fit(
         "🚀 AI Development Agent\n"
-        "Powered by Claude Sonnet 4",
+        f"Powered by Claude Sonnet 4\n"
+        f"Testing: {'E2B Sandbox' if use_e2b else 'Simulated'}",
         style="bold white on blue"
     ))
+
+    if use_e2b and not os.getenv("E2B_API_KEY"):
+        console.print("  ⚠️ E2B_API_KEY not found, falling back to simulation", style="yellow")
+        use_e2b = False
 
     initial_state: AgentState = {
         "user_request": user_request,
         "tech_stack_context": tech_stack,
         "output_directory": output_dir,
+        "use_e2b": use_e2b,
         "blueprint": None,
         "test_suite": None,
         "implementation": None,

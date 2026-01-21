@@ -7,7 +7,8 @@ A production-ready AI software engineering agent built with LangGraph and Claude
 - **🧠 Smart Planning** - Creates detailed technical blueprints with Claude Sonnet 4
 - **🕵️ Test-First Approach** - Writes Playwright E2E tests before implementation
 - **👷 Self-Correcting Builder** - Implements code and fixes errors automatically
-- **🧪 Sandbox Validation** - Tests code before delivery (E2B integration ready)
+- **🧪 Real Test Execution** - E2B cloud sandbox integration for actual Playwright tests
+- **🎭 Simulation Mode** - Fast simulated testing for development/prototyping
 - **💰 Cost Tracking** - Monitors token usage and API costs in real-time
 - **📊 Structured Outputs** - Type-safe Pydantic schemas for all AI responses
 - **🎨 Beautiful CLI** - Rich terminal UI with progress tracking
@@ -23,7 +24,7 @@ A production-ready AI software engineering agent built with LangGraph and Claude
 | Outdated Claude 3.5 model | ✅ Updated to `claude-sonnet-4-20250514` |
 | String JSON parsing | ✅ Structured outputs with Pydantic `.with_structured_output()` |
 | No error handling | ✅ Try/catch blocks with detailed error tracking |
-| Simulated sandbox only | ✅ Architecture ready for E2B/Docker integration |
+| Simulated sandbox only | ✅ **Full E2B integration - real Playwright tests!** |
 | No file system ops | ✅ Generates and saves files to disk |
 | No cost tracking | ✅ Real-time token usage and cost calculation |
 | Poor logging | ✅ Rich terminal UI with tables and panels |
@@ -83,6 +84,29 @@ Or run the example:
 ```bash
 python agent.py
 ```
+
+### 3. Enable E2B for Real Testing (Optional)
+
+By default, the agent uses **simulated** test results. To run **real Playwright tests** in E2B cloud sandboxes:
+
+```bash
+# 1. Get E2B API key from https://e2b.dev
+# 2. Add to .env file
+echo "E2B_API_KEY=your_key_here" >> .env
+
+# 3. Run with E2B enabled
+python example_with_e2b.py
+```
+
+Or in code:
+```python
+run_agent(
+    user_request="Your feature request",
+    use_e2b=True  # Enable real testing!
+)
+```
+
+**Note:** E2B costs ~$0.05 per test run. See [E2B_GUIDE.md](E2B_GUIDE.md) for full details.
 
 ## 📖 Usage Examples
 
